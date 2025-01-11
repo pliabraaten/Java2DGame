@@ -15,8 +15,19 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
     final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
 
+    // FPS
+    int FPS = 60;
+
+    // Keyboard input
+    KeyHandler keyH = new KeyHandler();
+
     // Game clock
     Thread gameThread;
+
+    // Set Player's default position
+    int playerX = 100;
+    int playerY = 100;
+    int playerSpeed = 4;
 
     // Game Panel Constructor
     public GamePanel () {
@@ -25,6 +36,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setBackground(Color.black);
         // Improves rendering performance
         this.setDoubleBuffered(true);  // When true, allows for offscreen painting buffer
+        this.addKeyListener(keyH);  //
+        this.setFocusable(true);
     }
 
     // Automatically calls run method
@@ -39,7 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         while(gameThread != null) {  // As long as Thread exists
 
-//            System.out.println("The game loop is running");
+            long currentTime = System.nanoTime();  // Current system time
+
 
             // 1 UPDATE: update information like character positions
             update();
@@ -50,18 +64,33 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // UPDATE
     public void update() {
+
+        // Updates player position
+        if (keyH.upPressed == true) {  // Move up if W is pressed
+            playerY -= playerSpeed;
+        }
+        if (keyH.downPressed == true) {
+            playerY += playerSpeed;
+        }
+        if (keyH.leftPressed == true) {
+            playerX -= playerSpeed;
+        }
+        if (keyH.rightPressed == true) {
+            playerX += playerSpeed;
+        }
 
     }
 
-    // Paints the screen with updated information
+    // DRAW
     public void paintComponent(Graphics g) {  // Standard method in Java
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;  // Use Java's Graphics2D class
 
         // Make white rectangle
         g2.setColor(Color.white);
-        g.fillRect(100, 100, 48, 48);
+        g.fillRect(playerX, playerY, tileSize, tileSize);  // Draw at player's position, and size of tile
         g2.dispose();  // Dispose graphics context
 
     }
