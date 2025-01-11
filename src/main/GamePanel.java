@@ -46,21 +46,33 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    // GAME LOOP
+    // GAME LOOP: DELTA METHOD
     @Override
     public void run() {  // Called automatically by Thread
 
+        double drawInterval = 1000000000/FPS;  // 1 second divided by FPS (60); draws screen every 0.01666 seconds
+        double delta = 0;  // Initialize
+        long lastTime = System.nanoTime();  // Initialize lastTime as current time
+        long currentTime;
+
         while(gameThread != null) {  // As long as Thread exists
 
-            long currentTime = System.nanoTime();  // Current system time
+            currentTime = System.nanoTime();  // Find current time
 
+            delta += (currentTime - lastTime) / drawInterval;  // Delta = duration divided by draw interval
 
-            // 1 UPDATE: update information like character positions
-            update();
+            lastTime = currentTime;  // Update lastTime for next duration interval calculation
 
-            // 2 DRAW: draw the screen with the updated information
-            repaint();  // repaint calls the paintComponent standard Java method
+            if (delta >= 1) {  // If delta is more than 1, then update info and draw new info to screen
 
+                // 1 UPDATE: update information like character positions
+                update();
+
+                // 2 DRAW: draw the screen with the updated information
+                repaint();  // repaint calls the paintComponent standard Java method
+
+                delta--;  // ?Resets delta?
+            }
         }
     }
 
