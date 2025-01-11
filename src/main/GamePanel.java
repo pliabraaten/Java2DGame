@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (delta >= 1) {  // If delta is more than 1, then update info and draw new info to screen
 
                 // 1 UPDATE: update information like character positions
-                update();
+                update();  // Calls update 60 times per second
 
                 // 2 DRAW: draw the screen with the updated information
                 repaint();  // repaint calls the paintComponent standard Java method

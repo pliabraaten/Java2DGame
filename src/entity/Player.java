@@ -48,7 +48,26 @@ public class Player extends Entity {
     }
 
     // Updates player position and direction based on keyboard inputs
-    public void update() {
+    public void update() {  // This method gets called from Game Panel > Game Loop 60 times per second
+
+        // Only updates animation counter while key is pressed
+        if (keyH.upPressed == true || keyH.downPressed == true ||
+                keyH.leftPressed == true || keyH.rightPressed == true) {
+
+            // Player animation counter
+            spriteCounter++;  // Counter is increased every frame (60 times per second)
+            if (spriteCounter > 12) {  // When counter hits x frames, it changes the spriteNum which changes image in draw()
+                if (spriteNum == 1) {
+                    spriteNum = 2;
+                } else if (spriteNum == 2) {
+                    spriteNum = 1;
+                }
+                spriteCounter = 0;
+            }
+        }
+
+        // TODO: FIX DIAGONAL MOVEMENT BY NORMALIZING THE VECTOR
+        // Update direction based on keyboard input
         if (keyH.upPressed == true) {  // Move up if W is pressed
             direction = "up";  // Set direction
             y -= speed;
@@ -67,6 +86,8 @@ public class Player extends Entity {
         }
     }
 
+
+
     // Draw new player position/info
     public void draw(Graphics2D g2) {
 
@@ -75,16 +96,36 @@ public class Player extends Entity {
         // Pick player image based on direction, from already loaded images from getPlayerImage
         switch (direction) {
             case "up":
-                image = up1;
+                if (spriteNum == 1) {  // Animation is based on spriteNum changing
+                    image = up1;
+                }
+                if (spriteNum ==2) {  // If sprite counter is 2, then use second image for animation
+                    image = up2;
+                }
                 break;
             case "down":
-                image = down1;
+                if (spriteNum == 1) {
+                    image = down1;
+                }
+                if (spriteNum ==2) {
+                    image = down2;
+                }
                 break;
             case "left":
-                image = left1;
+                if (spriteNum == 1) {
+                    image = left1;
+                }
+                if (spriteNum ==2) {
+                    image = left2;
+                }
                 break;
             case "right":
-                image = right1;
+                if (spriteNum == 1) {
+                    image = right1;
+                }
+                if (spriteNum ==2) {
+                    image = right2;
+                }
                 break;
         }
 
