@@ -1,5 +1,7 @@
 package main;
 
+import entity.Player;
+
 import javax.swing.JPanel;
 import java.awt.*;
 
@@ -9,7 +11,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16;  // 16x16 tiles for characters (pixel art)
     final int scale = 3;
 
-    final int tileSize = originalTileSize * scale;  // 48x48 tile ; Allows for characters to be larger at higher resolutions
+    public final int tileSize = originalTileSize * scale;  // 48x48 tile ; Allows for characters to be larger at higher resolutions
     final int maxScreenCol = 16;  // 4x3 ratio of screen
     final int maxScreenRow = 12;  // 12 tiles wide
     final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
@@ -18,16 +20,16 @@ public class GamePanel extends JPanel implements Runnable {
     // FPS
     int FPS = 60;
 
-    // Keyboard input
-    KeyHandler keyH = new KeyHandler();
+    // Instantiations
+    KeyHandler keyH = new KeyHandler();  // Keyboard input
+    Thread gameThread;  // Game clock
+    Player player = new Player(this, keyH); // Player object (this => the GamePanel class)
 
-    // Game clock
-    Thread gameThread;
-
-    // Set Player's default position
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4;
+    // Moved into PLayer class
+//    // Set Player's default position
+//    int playerX = 100;
+//    int playerY = 100;
+//    int playerSpeed = 4;
 
     // Game Panel Constructor
     public GamePanel () {
@@ -42,7 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Automatically calls run method
     public void startGameThread() {
-        gameThread = new Thread(this);  // this = GamePanel
+        gameThread = new Thread(this);  // this = GamePanel object
         gameThread.start();
     }
 
@@ -79,30 +81,19 @@ public class GamePanel extends JPanel implements Runnable {
     // UPDATE
     public void update() {
 
-        // Updates player position
-        if (keyH.upPressed == true) {  // Move up if W is pressed
-            playerY -= playerSpeed;
-        }
-        if (keyH.downPressed == true) {
-            playerY += playerSpeed;
-        }
-        if (keyH.leftPressed == true) {
-            playerX -= playerSpeed;
-        }
-        if (keyH.rightPressed == true) {
-            playerX += playerSpeed;
-        }
+        player.update();  // Run Player's info update method
+
 
     }
 
     // DRAW
-    public void paintComponent(Graphics g) {  // Standard method in Java
+    public void paintComponent(Graphics g) {  // Graphics is a standard method in Java
+        // Use Java's Graphics2D class
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D)g;  // Use Java's Graphics2D class
+        Graphics2D g2 = (Graphics2D)g;
 
-        // Make white rectangle
-        g2.setColor(Color.white);
-        g.fillRect(playerX, playerY, tileSize, tileSize);  // Draw at player's position, and size of tile
+        player.draw(g2);  // Run Player's draw method to paint the updated info
+
         g2.dispose();  // Dispose graphics context
 
     }
