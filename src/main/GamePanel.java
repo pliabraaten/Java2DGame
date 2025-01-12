@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import tile.TileManager;
 
 import javax.swing.JPanel;
 import java.awt.*;
@@ -12,24 +13,19 @@ public class GamePanel extends JPanel implements Runnable {
     final int scale = 3;
 
     public final int tileSize = originalTileSize * scale;  // 48x48 tile ; Allows for characters to be larger at higher resolutions
-    final int maxScreenCol = 16;  // 4x3 ratio of screen
-    final int maxScreenRow = 12;  // 12 tiles wide
-    final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
-    final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
+    public final int maxScreenCol = 16;  // 4x3 ratio of screen
+    public final int maxScreenRow = 12;  // 12 tiles wide
+    public final int screenWidth = tileSize * maxScreenCol;  // 768 pixels
+    public final int screenHeight = tileSize * maxScreenRow;  // 576 pixels
 
     // FPS
     int FPS = 60;
 
     // Instantiations
+    TileManager tileM = new TileManager(this);  // Processes and creates tile map matrix when constructed
     KeyHandler keyH = new KeyHandler();  // Keyboard input
     Thread gameThread;  // Game clock
     Player player = new Player(this, keyH); // Player object (this => the GamePanel class)
-
-    // Moved into PLayer class
-//    // Set Player's default position
-//    int playerX = 100;
-//    int playerY = 100;
-//    int playerSpeed = 4;
 
     // Game Panel Constructor
     public GamePanel () {
@@ -91,6 +87,8 @@ public class GamePanel extends JPanel implements Runnable {
         // Use Java's Graphics2D class
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
+
+        tileM.draw(g2);  // Draws tile map layer before player
 
         player.draw(g2);  // Run Player's draw method to paint the updated info
 
