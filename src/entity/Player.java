@@ -13,11 +13,17 @@ public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
 
+    public final int screenX;  // Player character on the screen (centered)
+    public final int screenY;  // Final variables so doesn't change
+
     // Constructor
     public Player(GamePanel gp, KeyHandler keyH) {
 
         this.gp = gp;
         this.keyH = keyH;
+
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);  // Screen position is centered in the screen
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);  // Adjustment since pos is based on top LH corner of player
 
         setDefaultValues();  // Set player's default position
         getPlayerImage(); // Load player images
@@ -25,8 +31,8 @@ public class Player extends Entity {
 
     // Set player's default position
     public void setDefaultValues() {
-        x = 100;
-        y = 100;
+        worldX = gp.tileSize * 23;  // Position on world map (not screen)
+        worldY = gp.tileSize * 21;  // Start 22 tiles down on world map
         speed = 4;
         direction ="down";
     }
@@ -70,19 +76,19 @@ public class Player extends Entity {
         // Update direction based on keyboard input
         if (keyH.upPressed == true) {  // Move up if W is pressed
             direction = "up";  // Set direction
-            y -= speed;
+            worldY -= speed;
         }
         if (keyH.downPressed == true) {
             direction = "down";
-            y += speed;
+            worldY += speed;
         }
         if (keyH.leftPressed == true) {
             direction = "left";
-            x -= speed;
+            worldX -= speed;
         }
         if (keyH.rightPressed == true) {
             direction = "right";
-            x += speed;
+            worldX += speed;
         }
     }
 
@@ -130,7 +136,7 @@ public class Player extends Entity {
         }
 
         // Draw player image at coordinates and at scaled size
-        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
     }
 
 }

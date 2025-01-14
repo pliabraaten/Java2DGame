@@ -23,10 +23,10 @@ public class TileManager {
         this.gp = gp;
 
         tile = new Tile[10];  // Create array of tiles
-        mapTileNum = new int[gp.maxScreenCol][gp.maxScreenRow];  // Instantiate mapTileNum object
+        mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];  // Instantiate mapTileNum object
 
         getTileImage();  // Load tile images into tile type array
-        loadMap("/maps/map01.txt");  // Load tile map into mapTileNum matrix
+        loadMap("/maps/world01.txt");  // Load tile map into mapTileNum matrix
     }
 
     // Load tile images
@@ -41,6 +41,15 @@ public class TileManager {
 
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water01.png"));
+
+            tile[3] = new Tile();
+            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
+
+            tile[4] = new Tile();
+            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+
+            tile[5] = new Tile();
+            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
 
         }catch(IOException e) {
             e.printStackTrace();
@@ -57,11 +66,11 @@ public class TileManager {
             int col = 0;
             int row = 0;
 
-            while (col < gp.maxScreenCol && row < gp.maxScreenRow) {  // Limited by screen boundary
+            while (col < gp.maxWorldCol && row < gp.maxWorldRow) {  // Limited by world map boundary
                 // BufferedReader br will read line and put it in line var
                 String line = br.readLine();
 
-                while (col < gp.maxScreenCol) {  // col acts as tile counter for number of tiles in screen width
+                while (col < gp.maxWorldCol) {  // col acts as tile counter for number of tiles in world map width
                     // Split up line by space delimiter and put into numbers array
                     String numbers[] = line.split(" ");
 
@@ -70,7 +79,7 @@ public class TileManager {
                     mapTileNum[col][row] = num;  // Set the split and newly converted int into the tile map matrix
                     col++;  // Move to next tile
                 }
-                if (col == gp.maxScreenCol) {  // When end of screen is reached in tile count
+                if (col == gp.maxWorldCol) {  // When end of world map is reached in tile count
 
                     col = 0;  // Reset
                     row ++;  // Move row counter for next line in text map file
@@ -85,24 +94,38 @@ public class TileManager {
     // Draw tiles
     public void draw(Graphics2D g2) {
 
-       int col = 0;  // To compare with maxScreenCol: width of screen by tile size
-       int row = 0;
-       int x = 0;
-       int y = 0;
+       int worldCol = 0;  // To compare with maxWorldCol: width of world map by tile size
+       int worldRow = 0;
 
-       while (col < gp.maxScreenCol && row < gp.maxScreenRow) {  // While col and row are within screen
 
-           int tileNum = mapTileNum[col][row];  // Extract the tile type number stored at mapTileNum[0][0] to start
+       while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {  // While col and row are within world map
 
-           g2.drawImage(tile[tileNum].image, x, y, gp.tileSize, gp.tileSize, null);  // Draws first tile at 0, 0
-           col++;  // Increment map matrix width value
-           x += gp.tileSize;  // Move x to next tile spot
+           int tileNum = mapTileNum[worldCol][worldRow];  // Extract the tile type number stored at mapTileNum[0][0]
 
-           if (col == gp.maxScreenCol) {  // When col reaches far right screen
-               col = 0;  // Reset
-               x = 0;  // Reset
-               row++;  // Increment map matrix y value
-               y += gp.tileSize;  // Move y down one tile spot
+           // Tracks where tiles are on the world map (fixed)
+           int worldX = worldCol * gp.tileSize;
+           int worldY = worldRow * gp.tileSize;
+
+           // Tracks where on the screen the tiles are drawn (changing based on player position)
+           int screenX = worldX - gp.player.worldX + gp.player.screenX;  // Offset player position since it is always screen center
+           // Tile's world position - player's world position + player's screen position
+           int screenY = worldY - gp.player.worldY + gp.player.screenY;
+
+           // Only draws/renders tiles that are in the screenview with these boundaries
+           if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&  // Tile position greater than world position - screen position (left)
+               worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&  // world -/+ tile size to expand boundary a bit more than screen
+               worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&  // Up boundary
+               worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {  // Down boundary
+
+               // Draws tile if in boundary
+               g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+           }
+
+           worldCol++;  // Increment map matrix width value to draw next tile
+
+           if (worldCol == gp.maxWorldCol) {  // When col reaches far right of world map
+               worldCol = 0;  // Reset
+               worldRow++;  // Increment map matrix y value
            }
        }
     }
