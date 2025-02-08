@@ -25,6 +25,12 @@ public class Player extends Entity {
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);  // Screen position is centered in the screen
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);  // Adjustment since pos is based on top LH corner of player
 
+        solidArea = new Rectangle();  // Creates collision box
+        solidArea.x = 8;  // Collision box parameters -> smaller than image
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
         setDefaultValues();  // Set player's default position
         getPlayerImage(); // Load player images
     }
@@ -56,9 +62,43 @@ public class Player extends Entity {
     // Updates player position and direction based on keyboard inputs
     public void update() {  // This method gets called from Game Panel > Game Loop 60 times per second
 
-        // Only updates animation counter while key is pressed
+        // Only updates movement and animation counter while key is pressed
         if (keyH.upPressed == true || keyH.downPressed == true ||
                 keyH.leftPressed == true || keyH.rightPressed == true) {
+
+            // TODO: FIX DIAGONAL MOVEMENT BY NORMALIZING THE VECTOR
+            // Update direction based on keyboard input
+            if (keyH.upPressed == true) {
+                direction = "up";  // Set direction
+            }
+            if (keyH.downPressed == true) {
+                direction = "down";
+            }
+            if (keyH.leftPressed == true) {
+                direction = "left";
+            }
+            if (keyH.rightPressed == true) {
+                direction = "right";
+            }
+
+            // CHECK FILE COLLISION
+            collisionOn = false;
+            gp.cChecker.checkTile(this);  // Pass in player entity to collision checker
+
+            // IF COLLISION IS FALSE, PLAYER CAN MOVE
+            if(collisionOn == false) {
+
+                switch(direction) {
+                    case "up": worldY -= speed;
+                        break;
+                    case "down": worldY += speed;
+                        break;
+                    case "left": worldX -= speed;
+                        break;
+                    case "right": worldX += speed;
+                        break;
+                }
+            }
 
             // Player animation counter
             spriteCounter++;  // Counter is increased every frame (60 times per second)
@@ -71,28 +111,7 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         }
-
-        // TODO: FIX DIAGONAL MOVEMENT BY NORMALIZING THE VECTOR
-        // Update direction based on keyboard input
-        if (keyH.upPressed == true) {  // Move up if W is pressed
-            direction = "up";  // Set direction
-            worldY -= speed;
-        }
-        if (keyH.downPressed == true) {
-            direction = "down";
-            worldY += speed;
-        }
-        if (keyH.leftPressed == true) {
-            direction = "left";
-            worldX -= speed;
-        }
-        if (keyH.rightPressed == true) {
-            direction = "right";
-            worldX += speed;
-        }
     }
-
-
 
     // Draw new player position/info
     public void draw(Graphics2D g2) {

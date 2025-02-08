@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     TileManager tileM = new TileManager(this);  // Processes and creates tile map matrix when constructed
     KeyHandler keyH = new KeyHandler();  // Keyboard input
     Thread gameThread;  // Game clock
+    public CollisionChecker cChecker = new CollisionChecker(this);  // Instantiate collisionChecker and pass in gp
     public Player player = new Player(this, keyH); // Player object (this => the GamePanel class)
 
     // Game Panel Constructor

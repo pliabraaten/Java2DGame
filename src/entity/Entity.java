@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 // Parent class for player, characters, enemies
@@ -13,5 +14,9 @@ public class Entity {
 
     public int spriteCounter = 0;
     public int spriteNum = 1;
+
+    // Collision box
+    public Rectangle solidArea;
+    public boolean collisionOn = false;
 
 }
