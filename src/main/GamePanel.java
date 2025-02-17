@@ -1,6 +1,7 @@
 package main;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.JPanel;
@@ -32,7 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler();  // Keyboard input
     Thread gameThread;  // Game clock
     public CollisionChecker cChecker = new CollisionChecker(this);  // Instantiate collisionChecker and pass in gp
+    public AssetSetter aSetter = new AssetSetter(this);  // Instantiate assetsetter passing in gp
     public Player player = new Player(this, keyH); // Player object (this => the GamePanel class)
+    public SuperObject obj[] = new SuperObject[10];  // Create space for 10 objects to be displayed at the same time
 
     // Game Panel Constructor
     public GamePanel () {
@@ -44,6 +47,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);  //
         this.setFocusable(true);
     }
+
+    // Run method to set and place objects
+    public void setupGame() {
+
+        aSetter.setObject();
+
+    }
+
 
     // Automatically calls run method
     public void startGameThread() {
@@ -86,7 +97,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         player.update();  // Run Player's info update method
 
-
     }
 
     // DRAW
@@ -95,8 +105,17 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
 
+        // TILE
         tileM.draw(g2);  // Draws tile map layer before player
 
+        // OBJECT
+        for(int i = 0; i < obj.length; i++) {  // Scan object array
+            if(obj[i] != null) {  // If object exists, run draw method
+                obj[i].draw(g2, this);
+            }
+        }
+
+        // PLAYER
         player.draw(g2);  // Run Player's draw method to paint the updated info
 
         g2.dispose();  // Dispose graphics context
