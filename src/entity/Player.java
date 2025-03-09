@@ -16,6 +16,8 @@ public class Player extends Entity {
     public final int screenX;  // Player character on the screen (centered)
     public final int screenY;  // Final variables so doesn't change
 
+    int hasKey = 0;  // Count of keys player has
+
     // Constructor
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -28,6 +30,8 @@ public class Player extends Entity {
         solidArea = new Rectangle();  // Creates collision box
         solidArea.x = 8;  // Collision box parameters -> smaller than image
         solidArea.y = 16;
+        solidAreaDefaultX = solidArea.x;  // Record default values so solidArea x and y variables can later change
+        solidAreaDefaultY = solidArea.y;
         solidArea.width = 32;
         solidArea.height = 32;
 
@@ -81,9 +85,13 @@ public class Player extends Entity {
                 direction = "right";
             }
 
-            // CHECK FILE COLLISION
+            // CHECK TILE COLLISION
             collisionOn = false;
             gp.cChecker.checkTile(this);  // Pass in player entity to collision checker
+
+            // CHECK OBJECT COLLISION
+            int objIndex = gp.cChecker.checkObject(this, true);  // Returns item index if obj collision
+            pickUpObject(objIndex);  // Player can pick up object if collision
 
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
             if(collisionOn == false) {
@@ -112,6 +120,33 @@ public class Player extends Entity {
             }
         }
     }
+
+    // Pick up object if player is on object
+    public void pickUpObject(int i) {
+
+        // If index is still 999, then player didn't touch an object
+        if (i != 999) {
+
+            String objectName = gp.obj[i].name;  // Retrieve name of the object touched
+
+            // Handle object touched by the type (name) of the object
+            switch (objectName) {
+                case "Key":
+                    hasKey++;  // Add key to player's key count
+                    gp.obj[i] = null;  // Remove key from map (object array)
+                    System.out.println("Key: " + hasKey);
+                    break;
+                case "Door":
+                    if(hasKey > 0) {  // If the player has a key
+                        gp.obj[i] = null;  // Remove the door from the map
+                        hasKey--;  // Decrement key from player's "inventory"
+                        System.out.println("Key: " + hasKey);
+                    }
+                    break;
+            }
+        }
+    }
+
 
     // Draw new player position/info
     public void draw(Graphics2D g2) {

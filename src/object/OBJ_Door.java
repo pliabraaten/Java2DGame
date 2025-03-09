@@ -13,5 +13,7 @@ public class OBJ_Door extends SuperObject{
         }catch (IOException e) {
 
         }
+        // Makes door solid and impassable with collision is true
+        collision = true;
     }
 }

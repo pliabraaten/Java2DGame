@@ -11,7 +11,9 @@ public class SuperObject {
     public String name;
     public boolean collision = false;
     public int worldX, worldY;
-
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);  // Allows tile object is on to be solid
+    public int solidAreaDefaultX = 0;
+    public int solidAreaDefaultY = 0;
 
     // Draw the objects to map
     public void draw(Graphics2D g2, GamePanel gp) {
