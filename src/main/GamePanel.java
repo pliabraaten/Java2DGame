@@ -22,20 +22,23 @@ public class GamePanel extends JPanel implements Runnable {
     // WORLD SETTINGS
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxScreenRow;
 
     // FPS
     int FPS = 60;
 
-    // Instantiations
+    // SYSTEM
     TileManager tileM = new TileManager(this);  // Processes and creates tile map matrix when constructed
     KeyHandler keyH = new KeyHandler();  // Keyboard input
-    Thread gameThread;  // Game clock
+    Sound sound = new Sound();  // Sounds
     public CollisionChecker cChecker = new CollisionChecker(this);  // Instantiate collisionChecker and pass in gp
     public AssetSetter aSetter = new AssetSetter(this);  // Instantiate assetsetter passing in gp
+    Thread gameThread;  // Game clock
+
+    // ENTITY AND OBJECT
     public Player player = new Player(this, keyH); // Player object (this => the GamePanel class)
     public SuperObject obj[] = new SuperObject[10];  // Create space for 10 objects to be displayed at the same time
+
+
 
     // Game Panel Constructor
     public GamePanel () {
@@ -52,6 +55,8 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
 
         aSetter.setObject();
+
+        playMusic(0);  // Start music
 
     }
 
@@ -119,6 +124,26 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2);  // Run Player's draw method to paint the updated info
 
         g2.dispose();  // Dispose graphics context
+    }
 
+    // MUSIC
+    public void playMusic(int i) {
+
+        // Methods from sound class
+        sound.setFile(i);  // Set music file
+        sound.play();  // Play music
+        sound.loop();  // Loop music
+    }
+
+    public void stopMusic() {
+
+        sound.stop();
+    }
+
+    // SOUND EFFECTS
+    public void playSE(int i) {
+
+        sound.setFile(i);
+        sound.play();
     }
 }

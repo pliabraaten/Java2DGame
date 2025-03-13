@@ -132,16 +132,23 @@ public class Player extends Entity {
             // Handle object touched by the type (name) of the object
             switch (objectName) {
                 case "Key":
+                    gp.playSE(1);  // Play coin SE
                     hasKey++;  // Add key to player's key count
                     gp.obj[i] = null;  // Remove key from map (object array)
                     System.out.println("Key: " + hasKey);
                     break;
                 case "Door":
                     if(hasKey > 0) {  // If the player has a key
+                        gp.playSE(3);  // Play unlock SE
                         gp.obj[i] = null;  // Remove the door from the map
                         hasKey--;  // Decrement key from player's "inventory"
                         System.out.println("Key: " + hasKey);
                     }
+                    break;
+                case "Boots":  // Increase player speed when boots are picked up
+                    gp.playSE(2);  // Play powerup SE
+                    speed += 1;
+                    gp.obj[i] = null;
                     break;
             }
         }
