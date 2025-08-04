@@ -29,7 +29,8 @@ public class GamePanel extends JPanel implements Runnable {
     // SYSTEM
     TileManager tileM = new TileManager(this);  // Processes and creates tile map matrix when constructed
     KeyHandler keyH = new KeyHandler();  // Keyboard input
-    Sound sound = new Sound();  // Sounds
+    Sound music = new Sound();  // Musics
+    Sound se = new Sound();  // Sound effects
     public CollisionChecker cChecker = new CollisionChecker(this);  // Instantiate collisionChecker and pass in gp
     public AssetSetter aSetter = new AssetSetter(this);  // Instantiate assetsetter passing in gp
     Thread gameThread;  // Game clock
@@ -130,20 +131,20 @@ public class GamePanel extends JPanel implements Runnable {
     public void playMusic(int i) {
 
         // Methods from sound class
-        sound.setFile(i);  // Set music file
-        sound.play();  // Play music
-        sound.loop();  // Loop music
+        music.setFile(i);  // Set music file
+        music.play();  // Play music
+        music.loop();  // Loop music
     }
 
     public void stopMusic() {
 
-        sound.stop();
+        music.stop();
     }
 
     // SOUND EFFECTS
     public void playSE(int i) {
 
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 }
