@@ -16,7 +16,7 @@ public class Player extends Entity {
     public final int screenX;  // Player character on the screen (centered)
     public final int screenY;  // Final variables so doesn't change
 
-    int hasKey = 0;  // Count of keys player has
+    public int hasKey = 0;  // Count of keys player has
 
     // Constructor
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -135,20 +135,29 @@ public class Player extends Entity {
                     gp.playSE(1);  // Play coin SE
                     hasKey++;  // Add key to player's key count
                     gp.obj[i] = null;  // Remove key from map (object array)
-                    System.out.println("Key: " + hasKey);
+                    gp.ui.showMessage("You got a key!");  // Display message
                     break;
                 case "Door":
                     if(hasKey > 0) {  // If the player has a key
                         gp.playSE(3);  // Play unlock SE
                         gp.obj[i] = null;  // Remove the door from the map
                         hasKey--;  // Decrement key from player's "inventory"
-                        System.out.println("Key: " + hasKey);
+                        gp.ui.showMessage("You opened the door!");  // Display message
+                    }
+                    else {
+                        gp.ui.showMessage("You need a key!");  // Display message
                     }
                     break;
                 case "Boots":  // Increase player speed when boots are picked up
                     gp.playSE(2);  // Play powerup SE
                     speed += 1;
                     gp.obj[i] = null;
+                    gp.ui.showMessage("Speed up!");  // Display message
+                    break;
+                case "Chest":
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);  // Play fanfare
                     break;
             }
         }
