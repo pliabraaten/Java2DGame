@@ -15,8 +15,8 @@ public class Player extends Entity {
 
     public final int screenX;  // Player character on the screen (centered)
     public final int screenY;  // Final variables so doesn't change
-
     public int hasKey = 0;  // Count of keys player has
+    int standCounter = 0;   // For player movement to go back to standing sprite
 
     // Constructor
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -119,6 +119,14 @@ public class Player extends Entity {
                 spriteCounter = 0;
             }
         }
+        // When not pressing any keys, change to standing sprite
+        else {
+            standCounter++;
+            if(standCounter == 20) {  // Adds 20 frame time buffer to return sprite to standing
+                spriteNum = 1;
+                standCounter = 0;
+            }
+        }
     }
 
     // Pick up object if player is on object
@@ -207,6 +215,10 @@ public class Player extends Entity {
 
         // Draw player image at coordinates and at scaled size
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+//        // Show player collision box for troubleshooting
+//        g2.setColor(Color.red);
+//        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
     }
 
 }
